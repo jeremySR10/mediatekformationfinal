@@ -11,10 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use const PLAYLISTSPATH;
 
 define("PLAYLISTSPATH", "pages/playlists.html.twig");
+
 /**
- * Description of PlaylistsController
+ * Gère les routes de la page des playlists
  *
- * @author emds
+ * @author jeremy
  */
 class PlaylistsController extends AbstractController {
     
@@ -36,15 +37,20 @@ class PlaylistsController extends AbstractController {
      */
     private $categorieRepository;    
     
-    function __construct(PlaylistRepository $playlistRepository, 
-            CategorieRepository $categorieRepository,
-            FormationRepository $formationRespository) {
+    /**
+     * Création du constructeur
+     * @param PlaylistRepository $playlistRepository
+     * @param CategorieRepository $categorieRepository
+     * @param FormationRepository $formationRespository
+     */
+    function __construct(PlaylistRepository $playlistRepository, CategorieRepository $categorieRepository,FormationRepository $formationRespository) {
         $this->playlistRepository = $playlistRepository;
         $this->categorieRepository = $categorieRepository;
         $this->formationRepository = $formationRespository;
     }
     
     /**
+     * Création de la route vers la page des playlists
      * @Route("/playlists", name="playlists")
      * @return Response
      */
@@ -58,6 +64,8 @@ class PlaylistsController extends AbstractController {
     }
 
     /**
+     * Tri les enregistrements selon le $champ "name" et l'ordre
+     * Ou selon le $champ "nbformations" et l'ordre
      * @Route("/playlists/tri/{champ}/{ordre}", name="playlists.sort")
      * @param type $champ
      * @param type $ordre
@@ -80,6 +88,8 @@ class PlaylistsController extends AbstractController {
     }         
     
     /**
+     * Récupère les enregistrements selon le $champ et la $valeur
+     * Et selon le $champ et la $valeur si autre $table
      * @Route("/playlists/recherche/{champ}/{table}", name="playlists.findallcontain")
      * @param type $champ
      * @param Request $request
@@ -103,6 +113,7 @@ class PlaylistsController extends AbstractController {
     }  
     
     /**
+     * Récupère les enregistrements des playlists individuelles
      * @Route("/playlists/playlist/{id}", name="playlists.showone")
      * @param type $id
      * @return Response

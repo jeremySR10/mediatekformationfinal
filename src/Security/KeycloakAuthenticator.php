@@ -19,35 +19,57 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
 /**
- * Description of KeycloakAuthenticator
+ * Gère l'authentification
  *
- * @author glmby
+ * @author bouyg
  */
 class KeycloakAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface {
-
+    
     private $clientRegistry;
     private $entityManager;
     private $router;
-
+    
+    /**
+     * Création du constructeur
+     * @param ClientRegistry $clientRegistry
+     * @param EntityManagerInterface $entityManager
+     * @param RouterInterface $router
+     */
     public function __construct(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager, RouterInterface $router)
     {
         $this->clientRegistry = $clientRegistry;
         $this->entityManager = $entityManager;
         $this->router = $router;
     }
-
+    
+    /**
+     * Spécifie le démarrage d'une authentification
+     * Sollicite keycloak
+     * @param Request $request
+     * @param AuthenticationException $authException
+     * @return Response
+     */
     public function start(Request $request, AuthenticationException $authException = null): Response {
         return new RedirectResponse(
                 '/oauth/login',
                 Response::HTTP_TEMPORARY_REDIRECT
         );
     }
-
+    
+    /**
+     * Appelée lorsqu'une une url est sollicitée
+     * @param Request $request
+     * @return bool|null
+     */
     public function supports(Request $request): ?bool {
         return $request->attributes->get('_route') === 'oauth_check';
     }
 
-
+    /**
+     * Gère les enregistrements de l'utilisateur en BDD
+     * @param Request $request
+     * @return Passport
+     */
     public function authenticate(Request $request): Passport {
         $client = $this->clientRegistry->getClient('keycloak');
         $accessToken = $this->fetchAccessToken($client);
@@ -87,13 +109,30 @@ class KeycloakAuthenticator extends OAuth2Authenticator implements Authenticatio
         );
     }
 
+    /**
+     * Exception déclenchée dans une autre méthode
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return Response|null
+     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response {
         $message = strtr($exception->getMessageKey(), $exception->getMessageData());
         return new Response($message, Response::HTTP_FORBIDDEN);
     }
-
+    
+    /**
+    * Redirection vers la partie "admin" du site si tout s'est bien passé
+    * @param Request $request
+    * @param TokenInterface $token
+    * @param string $firewallName
+    * @return Response|null
+    */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response {
         $targetUrl = $this->router->generate('admin.formations');
         return new RedirectResponse($targetUrl);
     }
+
+    
+
+
 }

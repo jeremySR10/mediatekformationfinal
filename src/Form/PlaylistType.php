@@ -1,10 +1,5 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace App\Form;
 
 use App\Entity\Formation;
@@ -16,12 +11,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Description of PlaylistType
- *
- * @author samsam
+ * Builder permettant de définir les champs du formulaire d'ajout ou d'édition
+ * d'une playlist
+ * @author jeremy
  */
 class PlaylistType extends AbstractType {
    
+    /**
+     * Ajout des champs pour le formulaire "formplaylist"
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
             ->add('name', TextType::class, [
@@ -41,4 +42,5 @@ class PlaylistType extends AbstractType {
                 'label' => 'Enregistrer'
             ]);
     }
+    
 }

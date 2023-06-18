@@ -5,12 +5,8 @@ namespace App\Repository;
 use App\Entity\Playlist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use const CNAME;
-use const CNCATEGORIENAME;
 use const FCATEGORIES;
 use const PFORMATIONS;
-use const PIDID;
-use const PNAMENAME;
 
 define("PIDID", "p.id id");
 define("PNAMENAME", "p.name name");
@@ -106,8 +102,7 @@ class PlaylistRepository extends ServiceEntityRepository
             ->groupBy('p.id')                
             ->orderBy('p.name', 'ASC')
             ->getQuery()
-            ->getResult();
-        
+            ->getResult();     
     }
     
     /**
@@ -122,6 +117,5 @@ class PlaylistRepository extends ServiceEntityRepository
                 ->orderBy('count(p.name)', $ordre)                
                 ->getQuery()
                 ->getResult();       
-    }
-          
+    }      
 }
